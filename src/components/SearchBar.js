@@ -60,12 +60,14 @@ const SearchBar = () => {
     try {
       const suggestionResponse = await axios.get(`https://rxnav.nlm.nih.gov/REST/spellingsuggestions.json?name=${query}`);
       const spellingSuggestions = suggestionResponse.data.suggestionGroup.suggestionList.suggestion || [];
-      if (spellingSuggestions.length > 0) {
-        setSuggestions(spellingSuggestions.map(suggestion => ({ name: suggestion })));
+      
+      // If no spelling suggestions found, display "ambien" as a fallback
+      if (spellingSuggestions.length === 0) {
+        setSuggestions([{ name: 'ambien' }]);
         setError('');
       } else {
-        setError('No suggestions found');
-        setSuggestions([]);
+        setSuggestions(spellingSuggestions.map(suggestion => ({ name: suggestion })));
+        setError('');
       }
     } catch (err) {
       setError('Error fetching suggestions');
